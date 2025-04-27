@@ -18,6 +18,31 @@
         const form = document.getElementById("form");
         const input = document.getElementById("input");
 
+        document.addEventListener('DOMContentLoaded', async (e) => {
+            console.log(`sayfa yenilendi`);
+            const response = await fetch("http://localhost:3000/getAllMessages")
+            const data = await response.json()
+            data?.forEach(element => {
+                const item = document.createElement("li");
+                item.className = "message-bubble";
+                window.sessionStorage.getItem('user') == element.userName && item.style.setProperty('align-items', 'flex-end');
+
+                item.innerHTML = window.sessionStorage.getItem('user') == element.userName ?
+                    `
+    <div class="own-message">
+        <div class="sender-name">${element.userName}</div>
+        <div class="message-text">${element.message}</div>
+    </div>` :
+                    `
+    <div class="">
+        <div class="sender-name">${element.userName}</div>
+        <div class="message-text">${element.message}</div>
+    </div>`;
+
+                messages.appendChild(item);
+            });
+        })
+
         const temporaryNickName = [
             "muzSever",
             "tavukDansçı",
@@ -135,20 +160,33 @@
         form.addEventListener("submit", (e) => {
             e.preventDefault();
             if (input.value) {
+                // Server'a mesajin iletilmesi
                 socket.emit("chat message", { userName: userName, message: input.value });
+                // mesaj gonderildikten sonra input'un temizlenmesi
                 input.value = "";
             }
         });
         socket.on("chat message", (payload) => {
+            // Clien'a gelen baska kullanıcıların yazdıgı mesajları listeleme
             const item = document.createElement("li");
+            window.sessionStorage.getItem('user') == payload.userName && item.style.setProperty('align-items', 'flex-end');
+
             item.className = "message-bubble";
-            item.innerHTML = `
-                <div class="sender-name">${payload.userName}</div>
-                <div class="message-text">${payload.message}</div>
+            item.innerHTML = window.sessionStorage.getItem('user') == payload.userName ?
                 `
+    <div class="own-message">
+        <div class="sender-name">${payload.userName}</div>
+        <div class="message-text">${payload.message}</div>
+    </div>` :
+                `
+    <div class="">
+        <div class="sender-name">${payload.userName}</div>
+        <div class="message-text">${payload.message}</div>
+    </div>`;
             messages.appendChild(item);
         });
         socket.on("connect", () => {
+            // odaya baglanan kullanıcının server'a kendini bildirmesi
             socket.emit("new user", userName)
         })
     </script>
