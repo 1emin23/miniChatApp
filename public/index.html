@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script>
+        const socket = io();
+        const form = document.getElementById("form");
+        const input = document.getElementById("input");
+
+        const temporaryNickName = [
+            "muzSever",
+            "tavukDansçı",
+            "balıkKoşucu",
+            "kurbağaDöven",
+            "ayıKovalayan",
+            "civcivPatlatan",
+            "deveTırmalayan",
+            "tilkiSürükleyen",
+            "pandaKükreyen",
+            "kediIsıran",
+            "ördekTırmalayan",
+            "tavşanSürükleyen",
+            "yılanKucaklayan",
+            "köpekKaçıran",
+            "kartalAğlayan",
+            "inekKaçan",
+            "horozŞarkıcı",
+            "domuzHoplayan",
+            "sincapKaydıran",
+            "kuzuSavuran",
+            "eşekZıplayan",
+            "zürafaKıvıran",
+            "koalaYelkençi",
+            "kanguruTırmanan",
+            "kertenkeleFırlatan",
+            "rakunUçuran",
+            "boğaUğuldayan",
+            "leylekSürçen",
+            "pelikanAtlayan",
+            "yunusÇiğneyen",
+            "kaplanÖpen",
+            "çakalIsırılan",
+            "geyikÖrgücü",
+            "hamsterFırlayan",
+            "sansarGülümseyen",
+            "kobayYakan",
+            "kuğuHıçkıran",
+            "akrepKovboyu",
+            "armadilloKovalanan",
+            "çitaPatenci",
+            "antipopFısıldayan",
+            "kunduzÇakır",
+            "martıDansçı",
+            "papağanMırıldanan",
+            "baykuşSıralayan",
+            "köstebekFısıldayan",
+            "örümcekTıslayan",
+            "domuzBileği",
+            "fareTekmeci",
+            "pandaSavurucu",
+            "yılanKaydıran",
+            "deveTekerleyen",
+            "kediKaydıran",
+            "horozBağıran",
+            "atPatlatan",
+            "zürafaYatıran",
+            "kurbağaGıdıklayan",
+            "sincapKırbaçlayan",
+            "koalaSıçrayan",
+            "köpekBükücü",
+            "tavukSüzülen",
+            "aslanHapşıran",
+            "kaplanBüyücü",
+            "kartalSavuran",
+            "ayıSallayan",
+            "kuğuKırbaçlayan",
+            "ördekIsıtan",
+            "hamsterTersleyen",
+            "sansarYuvarlayan",
+            "fareHafifleyen",
+            "yılanSekirten",
+            "kartalPatinajcı",
+            "kunduzSalınan",
+            "kertenkeleZımbacı",
+            "tavşanFırlayan",
+            "akrepŞakıyan",
+            "pandaSakızcı",
+            "ayıBurkan",
+            "kanguruTersleyen",
+            "köstebekÇırpan",
+            "pelikanGümleyen",
+            "tavukSekirten",
+            "domuzDönen",
+            "sincapHoplatan",
+            "hamsterSıçrayan",
+            "kartalSıçratan",
+            "kediTırmanan",
+            "ördekYutkunan",
+            "baykuşYuvarlayan",
+            "papağanIsıran",
+            "deveGülümseyen",
+            "tilkiPatlayan",
+            "armadilloÇakır",
+            "çitaKoşan",
+            "geyikMırıldayan",
+            "rakunÇiğneyen",
+            "horozÇırpınan",
+            "köpekUçuran",
+            "tavşanÇarpan",
+            "kartalKıvıran",
+        ];
+        const usedNumbers = []
+        // Kullanıcı adı kontrolü burada
+        if (window.sessionStorage.getItem('user') == null) {
+            let random = Math.floor(Math.random() * temporaryNickName.length);
+            while (usedNumbers.includes(random)) {
+                random = Math.floor(Math.random() * temporaryNickName.length);
+            }
+            usedNumbers.push(random);
+            window.sessionStorage.setItem("user", temporaryNickName[random]);
+        }
+        const userName = window.sessionStorage.getItem('user');
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit("chat message", { userName: userName, message: input.value });
+                input.value = "";
+            }
+        });
+        socket.on("chat message", (payload) => {
+            const item = document.createElement("li");
+            item.className = "message-bubble";
+            item.innerHTML = `
+                <div class="sender-name">${payload.userName}</div>
+                <div class="message-text">${payload.message}</div>
+                `
+            messages.appendChild(item);
+        });
+        socket.on("connect", () => {
+            socket.emit("new user", userName)
+        })
+    </script>
+</body>
+
+</html>
