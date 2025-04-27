@@ -20,8 +20,7 @@
 
         document.addEventListener('DOMContentLoaded', async (e) => {
             console.log(`sayfa yenilendi`);
-            const baseURL = window.location.origin;
-            const response = await fetch(`${baseURL}/getAllMessages`);
+            const response = await fetch(`/getAllMessages`);
             const data = await response.json()
             data?.forEach(element => {
                 const item = document.createElement("li");
