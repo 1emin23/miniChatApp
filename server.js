@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/getAllMessages", (req, res) => {
+  console.log("getAllMessages route:", messages);
   res.json(messages);
 });
 
