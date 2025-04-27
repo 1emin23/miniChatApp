@@ -31,6 +31,7 @@ io.on("connection", (socket) => {
     // Server'da aynı odaya baglı olan bütün client'lara datanın gonderilmesi
     io.emit("chat message", payload);
     messages.push(payload);
+    console.log("payload: ", payload, "messagesA eklendi: ", messages);
   });
   // Yeni bir kullanıcının odaya katılması
   socket.on("new user", (username) => {
