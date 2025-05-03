@@ -17,6 +17,9 @@
         const socket = io();
         const form = document.getElementById("form");
         const input = document.getElementById("input");
+        const messages = document.getElementById('messages')
+
+        messages.scrollTop = messages.scrollHeight;
 
         document.addEventListener('DOMContentLoaded', async (e) => {
             console.log(`sayfa yenilendi`);
@@ -40,6 +43,8 @@
     </div>`;
 
                 messages.appendChild(item);
+                messages.scrollTop = messages.scrollHeight;
+
             });
         })
 
@@ -184,6 +189,8 @@
         <div class="message-text">${payload.message}</div>
     </div>`;
             messages.appendChild(item);
+            messages.scrollTop = messages.scrollHeight;
+
         });
         socket.on("connect", () => {
             // odaya baglanan kullanıcının server'a kendini bildirmesi
